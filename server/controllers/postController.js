@@ -2,6 +2,7 @@
 
 // import
 const Post = require('../models/Post');
+const User = require('../models/User');
 
 // CREATE
 // route dautorisation de creation d'article
@@ -43,13 +44,24 @@ exports.createPost = async (req, res) => {
 // route pour récuperer tous les articles de luser
 exports.getAllPosts = async (req, res) => {
     try {
+        // cible le login qui sera mis dans lurl
+        const userLogin = req.params.login;
+
+        // cherche luser dans la bdd pour recuperer son id
+        const focusUser = await User.findOne({ login: userLogin });
+
         // cible lid du luser qui fait la demande
-        const userId = req.user.id;
+        // const userId = req.user.id;
+
+        // SI luser nexiste pas alors
+        if (!focusUser) {
+            return res.status(404).json({ message: "Utilisateur introuvable." });
+        }
 
         // cible dans la bdd TOUS les articles de cet user
         // sort: permet de trier par ordre chrono (plus recent au plus vieux)
         // post.find: recupere tous les elements qui correspondent au critere
-        const posts = await Post.find({ author: userId }).sort({ createdAt: -1 });
+        const posts = await Post.find({ author: focusUser._id }).sort({ createdAt: -1 });
 
         // return allposts a react
         res.status(200).json(posts);
@@ -129,7 +141,7 @@ exports.updatePost = async (req, res) => {
         res.status(200).json({
             post: updatedPost,
             message: "Votre billet a bien été mis à jour."
-    });
+        });
 
         // en cas d'erreur
     } catch (error) {
@@ -169,7 +181,7 @@ exports.deletePost = async (req, res) => {
         // return confirmation de suppression a react
         res.status(200).json({
             message: "Votre billet a bien été supprimé."
-    });
+        });
 
         // en cas d'erreur
     } catch (error) {
