@@ -26,7 +26,7 @@ exports.register = async (req, res) => {
         // standard logique: les mdps doivent correspondre
         if (password !== passwordConfirm) {
             return res.status(400).json({ message: "Les mots de passe ne correspondent pas." });
-        }
+        } 
 
         // assemblage pour la creation du nouveau compte
         const newUser = new User({
