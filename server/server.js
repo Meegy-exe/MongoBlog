@@ -1,15 +1,20 @@
 // lecture du .env
 require('dotenv').config();
 
-// import 
+// IMPORTS 
 const express = require('express');
 const mongoose = require('mongoose');
+// routes
+const authRoutes = require('./routes/auth');
 
 // initialisation serveur
 const app = express();
 
 // pour lire le format json, transforme le json recu en objet js
 app.use(express.json());
+
+// permet a express de savoir que les requetes avec /api/auth utilise ce fichier
+app.use('/api/auth', authRoutes);
 
 // rappel mongoose:
 // crée des schémas (ex: user doit avoir un mail un mdp ect... le champ est obligatoire)
