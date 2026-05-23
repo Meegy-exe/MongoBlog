@@ -6,6 +6,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 // routes
 const authRoutes = require('./routes/auth');
+const postRoutes = require('./routes/posts');
 
 // initialisation serveur
 const app = express();
@@ -15,6 +16,9 @@ app.use(express.json());
 
 // permet a express de savoir que les requetes avec /api/auth utilise ce fichier
 app.use('/api/auth', authRoutes);
+
+// permet a express de lier les requetes avec /api/posts au fichier article
+app.use('/api/posts', postRoutes);
 
 // rappel mongoose:
 // crée des schémas (ex: user doit avoir un mail un mdp ect... le champ est obligatoire)
