@@ -14,7 +14,7 @@ router.post('/', authMiddleware, postController.createPost);
 
 // READ
 // recuperation de TOUS les articles
-router.get('/', authMiddleware, postController.getAllPosts);
+router.get('/blog/:login', authMiddleware, postController.getAllPosts);
 
 // READ
 // recuparation d UN article précis
