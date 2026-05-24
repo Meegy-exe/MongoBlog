@@ -25,7 +25,6 @@ const Navbar = () => {
         <div className="space-x-6 p-3 bg-gray-100 border-b border-dashed border-gray-400 text-center text-[15px] font-bold shadow-sm">
 
             {/* accueil de tous les blogs */}
-            {/* warning a relier apres */}
             <Link to="/" className="text-fuchsia-600 hover:underline">
                 [ Accueil ]
             </Link>
