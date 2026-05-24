@@ -1,4 +1,4 @@
- # Piscine Mern DAY 04
+ # Piscine Mern DAY 04 / 05
 
 *Fichier personnel à but de retracer mon apprentissage toute la journée de la piscine.*
 
@@ -413,6 +413,19 @@ if (sortBy === "id" || sortBy === "lastname" || sortBy === "firstname")
 
 Adapte le bon pour la cuisine
 sortingOptions[sortBy] = 1;
+
+
+
+### .populate()
+.populate(categories): permet de donner l'objet complet de la categorie correspondante
+
+### 
+
+
+
+
+
+
 
 
 

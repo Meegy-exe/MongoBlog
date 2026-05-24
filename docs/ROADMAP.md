@@ -1,8 +1,8 @@
-### ex_01
+### D04_ex_01
 Installation & initialisation du projet
 Push sur la main
 
-### ex_02
+### D04_ex_02
 Mise en place du dossier models/ (convention de nommage).
 Structure MVC
 M: modèles, règle de base de la BDD.
@@ -10,7 +10,7 @@ Création des routes.
 Push sur la feat/ex_02
 Merge sur la develop
 
-### ex_03
+### d04_ex_03
 Mise en place du système de blog (article...)
 Structure MVC.
 Models:
@@ -70,7 +70,7 @@ Dans /server:
     node seed.js
 
 
-### ex_04
+### d04_ex_04
 Client:
 - Création du formulaire de création de com
 /!\ ne doit apparaitre que sur un blog visité
@@ -84,9 +84,30 @@ Server:
 /!\ le propre user du blog ne peut pas modifier ou creer de com
 
 
-### ex_05
+### d04_ex_05
 Client:
 - Creation d'une page d'accueil regroupant tous les blogs existants
 
 Server: 
 - READ ; pour cibler tous les blogs
+
+### Bonus D04:
+Le bonus n'a pas été fait.
+
+### D05_ex_01
+L'exo 1 n'est pas fait pour le moment.
+
+### D05_ex_02
+Server:
+- Création d'un model pour les catégories d'articles.
+
+- Création du controller pour récuperer la listes des catégories
+
+- Création de la route categories
+
+Mise à jour de la seed.js.
+
+Client:
+- Création d'un formulaire pour ajout de catégories sur la création d'un article.
+
+- Création de la listes des catégories pour filtrer lors de la recherche d'un article
