@@ -82,4 +82,11 @@ Client:
 Server:
 - Creation route POST: permet aux users de mettre des coms
 /!\ le propre user du blog ne peut pas modifier ou creer de com
-- 
+
+
+### ex_05
+Client:
+- Creation d'une page d'accueil regroupant tous les blogs existants
+
+Server: 
+- READ ; pour cibler tous les blogs
