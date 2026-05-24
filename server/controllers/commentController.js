@@ -15,7 +15,10 @@ exports.getPostComments = async (req, res) => {
         // cible dans la bdd TOUS les coms de larticle
         // sort: permet de trier par ordre chrono (plus recent au plus vieux)
         // post.find: recupere tous les elements qui correspondent au critere
-        const comments = await Comment.find({ post: postId }).sort({ createdAt: -1 });
+        // populate: remplace lid par le login
+        const comments = await Comment.find({ post: postId })
+            .sort({ createdAt: -1 })
+            .populate('author', 'login');
 
         // return allposts a react
         res.status(200).json(comments);
@@ -65,7 +68,7 @@ exports.deleteComment = async (req, res) => {
         // return confirmation de suppression a react
         res.status(200).json({
             message: "Votre commentaire a bien été supprimé."
-    });
+        });
 
         // en cas d'erreur
     } catch (error) {

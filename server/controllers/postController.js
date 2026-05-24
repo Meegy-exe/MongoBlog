@@ -164,6 +164,7 @@ exports.deletePost = async (req, res) => {
 
         // cible lid du luser qui fait la demande
         const userId = req.user.id;
+        console.log("Tentative de suppression - PostID :", postId, ", UserID :", userId);
 
         // findoneandupdate: cherche un element précis pour le supprimer
         const deletedPost = await Post.findOneAndDelete(
