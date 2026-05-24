@@ -25,6 +25,14 @@ const postSchema = new mongoose.Schema({
         required: true,
         ref: 'User'
     },
+    
+    // categorie
+    // tableau d'ID de categories liees au billet
+    // objectId: ref l'id unique genere
+    categories: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    }],
 
 }, {
     // timestamps en TRUE: dit a mongoose de gerer le temps de maniere automatique
