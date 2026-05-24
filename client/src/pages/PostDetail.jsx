@@ -21,6 +21,10 @@ const PostDetail = () => {
     const [editContent, setEditContent] = useState("");
     // states pour stocker letat en edition ou lecture
     const [isEditing, setIsEditing] = useState(false);
+    // cible luser connecte
+    const loggedUser = localStorage.getItem('userLogin');
+    // verification si luser co est sur son blog
+    const isMyBlog = loggedUser?.toLowerCase() === login?.toLowerCase();
 
     useEffect(() => {
         // attend la reponse de lapi avant de continuer
@@ -115,11 +119,14 @@ const PostDetail = () => {
                     </Link>
 
                     {/* modifier article */}
-                    <button
-                        onClick={() => setIsEditing(!isEditing)}
-                        className="text-fuchsia-600 font-bold border border-fuchsia-600 px-2 py-1 hover:bg-fuchsia-50 text-[13px]">
-                        {isEditing ? "[X] Annuler" : "Modifier le billet"}
-                    </button>
+                    {/* verification affiche modif que sil est lauteur de larticle */}
+                    {isMyBlog && (
+                        <button
+                            onClick={() => setIsEditing(!isEditing)}
+                            className="text-fuchsia-600 font-bold border border-fuchsia-600 px-2 py-1 hover:bg-fuchsia-50 text-[13px]">
+                            {isEditing ? "[X] Annuler" : "Modifier le billet"}
+                        </button>
+                    )}
                 </div>
 
                 {/* afficher larticle selon le cas */}
@@ -148,15 +155,15 @@ const PostDetail = () => {
 
                         {/* btn de validation */}
                         <div className="text-center mt-4">
-                            <button type="submit" className="py-2 px-4 bg-fuchsia-600 text-white font-boldtext-[13px]">
+                            <button type="submit" className="py-2 px-4 bg-fuchsia-600 text-white font-bold text-[13px]">
                                 Enregistrer
                             </button>
                         </div>
                     </form>
                 ) : (
                     // SI mode lecture alors
-                    // affiche l'article
-                    <PostCard post={post} />
+                    // affiche l'article en lui passant les infos
+                    <PostCard post={post} login={login} isMyBlog={isMyBlog} />
                 )}
 
                 {/* coms */}
