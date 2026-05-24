@@ -24,7 +24,7 @@ module.exports = (req, res, next) => {
 
         // cree un req.user & stocke lid pour lenvoyer au controller
         req.user = { 
-            id: verifiedToken.userId 
+            id: verifiedToken.id 
         };
 
         // seulement si tout est valide alors autorise la suite avec controller
