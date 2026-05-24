@@ -2,6 +2,9 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+// components
+import Navbar from './components/Navbar';
+
 // pages
 import Blog from './pages/Blog.jsx';
 import Login from './pages/Login.jsx';
@@ -12,6 +15,8 @@ import Register from './pages/Register';
 function App() {
   return (
     <BrowserRouter>
+      {/* nav bar */}
+      <Navbar />
       <Routes>
         {/* route vers la page de connexion */}
         <Route path="/login" element={<Login />} />
