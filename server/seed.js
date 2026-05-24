@@ -8,6 +8,7 @@ require('dotenv').config();
 const User = require('./models/User');
 const Post = require('./models/Post');
 const Comment = require('./models/Comment');
+const Category = require('./models/Category');
 
 // function pour remplir la bdd de comptes déjà existants
 const seedDB = async () => {
@@ -20,6 +21,7 @@ const seedDB = async () => {
         await User.deleteMany();
         await Post.deleteMany();
         await Comment.deleteMany();
+        await Category.deleteMany();
         console.log("La base de donnée a bien été réinitialisée");
 
         // hashage mdp
@@ -62,59 +64,92 @@ const seedDB = async () => {
         const marvin = savedUsers.find(user => user.login === "Marvin");
         const avril = savedUsers.find(user => user.login === "AvrilGirl62");
 
+        // creation des categories
+        const categories = [
+            { name: "Nostalgie", slug: "nostalgie", color: "#fca5a5" },
+            { name: "Mood", slug: "mood", color: "#a5b4fc" },
+            { name: "Musique", slug: "musique", color: "#fbbf24" },
+            { name: "Délires", slug: "delires", color: "#f472b6" }
+        ];
+
+        // attend & save les categories
+        const savedCategories = await Category.insertMany(categories);
+
+        // cible lid des cat & associes aux articles
+        const nostalgie = savedCategories.find(category => category.name === "Nostalgie");
+        const mood = savedCategories.find(category => category.name === "Mood");
+        const musique = savedCategories.find(category => category.name === "Musique");
+        const delires = savedCategories.find(category => category.name === "Délires");
+
         // creation des faux articles
         const articles = [
             // meegy
             {
                 title: "MSN me manque",
                 content: "Les wizz sur MSN c’était quelque chose 😭",
-                author: meegy._id
+                author: meegy._id,
+                categories: [nostalgie._id]
             },
             {
                 title: "Lâche tes coms",
                 content: "Merci pour les 100 commentaires 😘",
-                author: meegy._id
+                author: meegy._id,
+                categories: [delires._id]
             },
             // marvin
             {
                 title: "Tmtc",
                 content: "Pas besoin d’en dire plus...",
-                author: marvin._id
+                author: marvin._id,
+                categories: [mood._id]
             },
             {
                 title: "Mode emo activé",
                 content: "Mon sourire cache beaucoup de choses 💔",
-                author: marvin._id
+                author: marvin._id,
+                categories: [mood._id]
             },
             {
                 title: "Tokyo Hotel ❤️",
                 content: "Fan pour toujours !!",
-                author: marvin._id
+                author: marvin._id,
+                categories: [musique._id]
             },
             {
                 title: "Musique du moment",
                 content: "Numb de Linkin Park en boucle...",
-                author: marvin._id
+                author: marvin._id,
+                categories: [musique._id, mood._id]
             },
             {
                 title: "Les vrais savent",
                 content: "Ceux qui étaient là en 2008 comprendront 😌",
-                author: marvin._id
+                author: marvin._id,
+                categories: [nostalgie._id]
             },
             {
                 title: "Mon Nokia",
                 content: "J’ai encore Snake dessus 😂",
-                author: marvin._id
+                author: marvin._id,
+                categories: [nostalgie._id, delires._id]
+            },
+            // avril
+            {
+                title: "Black & Pink : Mon univers 🖤",
+                content: "Personne ne me comprend vraiment, mais ma musique et mon style disent tout. Avril Lavigne pour toujours !",
+                author: avril._id,
+                categories: [musique._id, mood._id]
             },
         ];
-        
+
         // attend lajout des articles & le tableau retourné dans une const
         const savedPosts = await Post.insertMany(articles);
 
-        // cible lid des faux coms
+        // cible lid des faux articles
         const msnPost = savedPosts.find(post => post.title === "MSN me manque");
         const emoPost = savedPosts.find(post => post.title === "Mode emo activé");
         const lacheComsPost = savedPosts.find(post => post.title === "Lâche tes coms");
+        const avrilPost = savedPosts.find(post => post.title === "Black & Pink : Mon univers 🖤");
 
         // creation de faux coms
         const comments = [
@@ -137,6 +172,16 @@ const seedDB = async () => {
                 content: "Avec ce look trop dark, on dirait trop Jinx, j'adore 🖤",
                 author: meegy._id,
                 post: emoPost._id
+            },
+            {
+                content: "Tellement d'accord avec toi, ce style est juste trop beau ! <3",
+                author: meegy._id,
+                post: avrilPost._id
+            },
+            {
+                content: "Trop stylé ton post, tu as trop raison !",
+                author: marvin._id,
+                post: avrilPost._id
             }
         ];
 
