@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/posts');
 const commentRoutes = require('./routes/comments');
+const categoryRoutes = require('./routes/categories');
 
 // initialisation serveur
 const app = express();
@@ -23,6 +24,9 @@ app.use('/api/posts', postRoutes);
 
 // permet a express de lier les requetes avec /api/comments au fichier commentaires
 app.use('/api/comments', commentRoutes);
+
+// permet a express de lier les requetes avec /api/categories au fichier categories
+app.use('/api/categories', categoryRoutes);
 
 // rappel mongoose:
 // crée des schémas (ex: user doit avoir un mail un mdp ect... le champ est obligatoire)
