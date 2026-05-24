@@ -6,14 +6,19 @@
 import { useParams, Link } from 'react-router-dom';
 // components
 import CreatePost from '../components/CreatePost';
+import PostCard from '../components/PostCard';
 // hooks
 import { usePosts } from '../hooks/usePosts';
+import { useCategories } from '../hooks/useCategories';
 
 const Blog = () => {
   const { login } = useParams();
 
   // cible les fonctions du hook 
   const { posts, getPosts, handleDelete, isMyBlog } = usePosts(login);
+
+  // cible les categories existantes pour la sidebar
+  const { categories } = useCategories();
 
   return (
     // fond du site
@@ -60,64 +65,69 @@ const Blog = () => {
             // map(): boucle pour afficher tous les articles
             <div className="mt-4 text-left">
               {posts.map((post) => (
-                <div key={post._id} className="mb-10">
-
-                  {/* titre */}
-                  <Link
-                    to={`/${login}/${post._id}`}
-                    className="block mb-4">
-                    <h2
-                      className="bg-gray-100 text-center text-fuchsia-600 font-bold p-2 border-t border-b border-gray-200 text-sm hover:bg-gray-200 transition-colors cursor-pointer">
-                      {post.title}
-                    </h2>
-                  </Link>
-
-                  {/* contenu*/}
-                  <div className="p-4 mb-4 min-h-[100px] bg-gray-50 border border-dashed border-gray-300">
-                    {/* whitespace-pre-wrap: important pour blogs (afficher les espaces) */}
-                    <p className="text-gray-800 whitespace-pre-wrap">{post.content}</p>
-                  </div>
-
-                  {/* footer + date */}
-                  <div className="flex justify-between items-center text-gray-500 mt-2 border-t border-gray-200 pt-2 text-[11px]">
-                    <span>@Posté le {new Date(post.createdAt).toLocaleDateString('fr-FR')}</span>
-
-                    {/* btn */}
-                    <div className="flex gap-4">
-                      <Link
-                        to={`/${login}/${post._id}`}
-                        className="bg-gray-100 hover:bg-gray-200 text-blue-600 border border-gray-300 px-3 py-1 font-bold cursor-pointer transition-colors">
-                        Voir & Commenter
-                      </Link>
-                      {isMyBlog && (
-                        <button
-                          onClick={() => handleDelete(post._id)}
-                          className="ml-4 bg-gray-100 hover:bg-gray-200 text-red-600 hover:text-red-800 border border-gray-300 px-3 py-1 font-bold cursor-pointer transition-colors">
-                          Supprimer
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                // ajout component
+                <PostCard
+                  key={post._id}
+                  post={post}
+                  login={login}
+                  isMyBlog={isMyBlog}
+                  handleDelete={handleDelete}
+                />
               ))}
             </div>
           )}
-
         </div>
 
-        {/* sidebar droite (infos) */}
+        {/* sidebar droite */}
         <div className="w-full p-4 border-l border-gray-200 hidden md:w-48 md:block">
+
+          {/* infos */}
           <div className="mb-6">
-            <h3 className="mb-2 p-1 font-bold bg-gray-100 text-center border-t border-b border-gray-200">
+            <h3
+              className="mb-2 p-1 font-bold bg-gray-100 text-center border-t border-b border-gray-200">
               Infos
             </h3>
-            {/* affiche format de liste */}
-            <ul className="text-gray-600 space-y-1">
+            <ul
+              className="text-gray-600 space-y-1">
               <li>Billets : {posts.length}</li>
               <li>Commentaires : 0</li>
               <li>Amis : 0</li>
             </ul>
           </div>
+
+          {/* tag categories */}
+          <div className="mb-6">
+
+            <h3
+              className="mb-2 p-1 font-bold bg-gray-100 text-center border-t border-b border-gray-200 uppercase text-[11px]">
+              Thèmes
+            </h3>
+
+            <ul
+              className="text-gray-600 space-y-1 text-[11px] font-bold">
+
+              <li className="mb-2">
+                <Link
+                  className="hover:text-fuchsia-600 transition-colors"
+                  to={`/${login}`}>
+                  TOUS LES BILLETS
+                </Link>
+              </li>
+
+              {/* map boucle afficher cats + liens url selon */}
+              {categories && categories.map((cat) => (
+                <li key={cat._id}>
+                  <Link
+                    to={`/${login}?category=${cat.slug}`}
+                    className="hover:text-fuchsia-600 transition-colors">
+                    {/* affiche le nbr de cat */}
+                    [ {cat.name} ] ({cat.postCount || 0})
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
         </div>
       </div>
     </div>
