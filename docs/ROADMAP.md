@@ -68,3 +68,18 @@ Leger style avec Tailwind.
 Mise en place d'un seeder
 Dans /server:
     node seed.js
+
+
+### ex_04
+Client:
+- Création du formulaire de création de com
+/!\ ne doit apparaitre que sur un blog visité
+
+- Création route d'un blog visité
+- Création route d'un article spécifique d'un blog visité
+/!\ la navigation entre les blogs ne doit pas redemander de connexion
+
+Server:
+- Creation route POST: permet aux users de mettre des coms
+/!\ le propre user du blog ne peut pas modifier ou creer de com
+- 
