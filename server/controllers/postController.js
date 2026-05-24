@@ -3,13 +3,14 @@
 // import
 const Post = require('../models/Post');
 const User = require('../models/User');
+const Category = require('../models/Category')
 
 // CREATE
 // route dautorisation de creation d'article
 exports.createPost = async (req, res) => {
     try {
         // cible les datas recues du form react
-        const { title, content } = req.body;
+        const { title, content, categories } = req.body;
 
         // cible lid du luser qui fait la demande
         const authorId = req.user.id;
@@ -18,7 +19,9 @@ exports.createPost = async (req, res) => {
         const newPost = new Post({
             title,
             content,
-            author: authorId
+            author: authorId,
+            // tableau vide si pas categorie
+            categories: categories || []
         });
 
         // attend la save avant de continuer
@@ -50,18 +53,40 @@ exports.getAllPosts = async (req, res) => {
         // cherche luser dans la bdd pour recuperer son id
         const focusUser = await User.findOne({ login: userLogin });
 
-        // cible lid du luser qui fait la demande
-        // const userId = req.user.id;
+        // cible le slug
+        const categorySlug = req.query.category;
 
         // SI luser nexiste pas alors
         if (!focusUser) {
             return res.status(404).json({ message: "Utilisateur introuvable." });
         }
 
-        // cible dans la bdd TOUS les articles de cet user
+        // etat qui stocke les articles de lauteur
+        let filter = { author: focusUser._id };
+
+        // SI une categorie est demandee dans lurl alors
+        if (categorySlug) {
+            // attend & cherche la categorie correspondante par rapport a son slug
+            const focusCategory = await Category.findOne({ slug: categorySlug });
+
+            // SI la categorie existe alors
+            if (focusCategory) {
+                //  ajoute son ID au filtre de recherche
+                filter.categories = focusCategory._id;
+                // sinon si la categorie nexiste pas
+            } else {
+                // return tableau vide
+                return res.status(200).json([]);
+            }
+        }
+
+        // cible dans la bdd TOUS les articles de cet user selon le filtre
+        // populate: remplace les ids par leurs categories
         // sort: permet de trier par ordre chrono (plus recent au plus vieux)
         // post.find: recupere tous les elements qui correspondent au critere
-        const posts = await Post.find({ author: focusUser._id }).sort({ createdAt: -1 });
+        const posts = await Post.find(filter)
+            .populate('categories')
+            .sort({ createdAt: -1 });
 
         // return allposts a react
         res.status(200).json(posts);
@@ -84,7 +109,7 @@ exports.getOnePost = async (req, res) => {
         const postId = req.params.id;
 
         // cible le post dans la bdd
-        const post = await Post.findById(postId);
+        const post = await Post.findById(postId).populate('categories');
 
         // SI larticle nexiste pas alors
         if (!post) {
@@ -117,7 +142,7 @@ exports.updatePost = async (req, res) => {
         const userId = req.user.id;
 
         // cible les datas envoyées par le form react
-        const { title, content } = req.body;
+        const { title, content, categories } = req.body;
 
 
         // findoneandupdate: cherche un element précis pour le modifier
@@ -125,7 +150,7 @@ exports.updatePost = async (req, res) => {
             // cherche avec lid du post et lid de luser
             { _id: postId, author: userId },
             // change titre & contenu
-            { title, content },
+            { title, content, categories },
             // demande a la bdd de renvoyer larticle maj
             { new: true }
         );
