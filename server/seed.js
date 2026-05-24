@@ -7,6 +7,7 @@ require('dotenv').config();
 // models
 const User = require('./models/User');
 const Post = require('./models/Post');
+const Comment = require('./models/Comment');
 
 // function pour remplir la bdd de comptes déjà existants
 const seedDB = async () => {
@@ -18,6 +19,7 @@ const seedDB = async () => {
         // réinitialisation & suppression des anciennes datas en bdd
         await User.deleteMany();
         await Post.deleteMany();
+        await Comment.deleteMany();
         console.log("La base de donnée a bien été réinitialisée");
 
         // hashage mdp
@@ -41,9 +43,16 @@ const seedDB = async () => {
             email: "marvin@mail.fr",
             password: hashedPassword,
             type: false
+        }, {
+            // 3eme compte
+            id: 3,
+            login: "AvrilGirl62",
+            email: "avril@mail.fr",
+            password: hashedPassword,
+            type: false
         }
         ];
-        // save des comptes dans la bdd
+        // attend lajout des comptes & le tableau retourné dans une const
         // insertmany: permet de save un tableau complet dans la bdd
         const savedUsers = await User.insertMany(users);
         console.log("Les utilisateur ont bien été créés.");
@@ -51,23 +60,31 @@ const seedDB = async () => {
         // cible lid des faux comptes
         const meegy = savedUsers.find(user => user.login === "Meegy");
         const marvin = savedUsers.find(user => user.login === "Marvin");
+        const avril = savedUsers.find(user => user.login === "AvrilGirl62");
 
         // creation des faux articles
         const articles = [
-            {
-                title: "Musique du moment",
-                content: "Numb de Linkin Park en boucle...",
-                author: marvin._id
-            },
-            {
-                title: "Mon style Dark & Alternatif",
-                content: "J'aimerai me définir un style... J'aime bien le noir, le côté dark. Un peu comme dans Arcane. Vous avez des conseils ?",
-                author: meegy._id
-            },
+            // meegy
             {
                 title: "MSN me manque",
                 content: "Les wizz sur MSN c’était quelque chose 😭",
                 author: meegy._id
+            },
+            {
+                title: "Lâche tes coms",
+                content: "Merci pour les 100 commentaires 😘",
+                author: meegy._id
+            },
+            // marvin
+            {
+                title: "Tmtc",
+                content: "Pas besoin d’en dire plus...",
+                author: marvin._id
+            },
+            {
+                title: "Mode emo activé",
+                content: "Mon sourire cache beaucoup de choses 💔",
+                author: marvin._id
             },
             {
                 title: "Tokyo Hotel ❤️",
@@ -75,14 +92,58 @@ const seedDB = async () => {
                 author: marvin._id
             },
             {
-                title: "Lâche tes coms",
-                content: "Merci pour les 100 commentaires 😘",
-                author: meegy._id
+                title: "Musique du moment",
+                content: "Numb de Linkin Park en boucle...",
+                author: marvin._id
+            },
+            {
+                title: "Les vrais savent",
+                content: "Ceux qui étaient là en 2008 comprendront 😌",
+                author: marvin._id
+            },
+            {
+                title: "Mon Nokia",
+                content: "J’ai encore Snake dessus 😂",
+                author: marvin._id
+            },
+        ];
+        
+        // attend lajout des articles & le tableau retourné dans une const
+        const savedPosts = await Post.insertMany(articles);
+
+        // cible lid des faux coms
+        const msnPost = savedPosts.find(post => post.title === "MSN me manque");
+        const emoPost = savedPosts.find(post => post.title === "Mode emo activé");
+        const lacheComsPost = savedPosts.find(post => post.title === "Lâche tes coms");
+
+        // creation de faux coms
+        const comments = [
+            {
+                content: "Grave !! J'ai encore le son en tête 😭",
+                author: marvin._id,
+                post: msnPost._id
+            },
+            {
+                content: "Moi j'apprends le codage, je vais recoder MSN tu vas voir ! 😎",
+                author: meegy._id,
+                post: msnPost._id
+            },
+            {
+                content: "Prem's !! 🥇 Rends les coms stp !!",
+                author: avril._id,
+                post: lacheComsPost._id
+            },
+            {
+                content: "Avec ce look trop dark, on dirait trop Jinx, j'adore 🖤",
+                author: meegy._id,
+                post: emoPost._id
             }
         ];
 
-        await Post.insertMany(articles);
         console.log("Les billets de blog ont bien été créés");
+        // attend lajout des coms avant de continuer
+        await Comment.insertMany(comments);
+        console.log("Les commentaires ont bien été créés");
 
         // deconnexion de la bdd
         mongoose.connection.close();
