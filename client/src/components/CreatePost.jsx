@@ -4,6 +4,8 @@
 // imports
 import { useState } from 'react';
 import axios from 'axios';
+// hooks
+import { useCategories } from '../hooks/useCategories';
 
 // onPostCreated:
 // permet de communiquer avec le composant Blog.jsx quun article a ete créé
@@ -12,6 +14,25 @@ const CreatePost = ({ onPostCreated }) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    // cible les 
+    const { categories } = useCategories();
+    // etat qui stocke les cat selectionnées
+    const [selectedCategories, setSelectedCategories] = useState([]);
+
+    // case à cocher pour selectionner les cat
+    const handleCategoryChange = (categoryId) => {
+        setSelectedCategories((prevSelected) => {
+            // SI la cat est deja cochée alors
+            if (prevSelected.includes(categoryId)) {
+                // maj le tableau pour la retirer
+                return prevSelected.filter(id => id !== categoryId);
+                // sinon
+            } else {
+                // crée le tableau avec le nouvel ID
+                return [...prevSelected, categoryId];
+            }
+        });
+    };
 
     // la fonction se declenche quand luser envoie le form de co
     const handleSubmit = async (e) => {
@@ -28,7 +49,8 @@ const CreatePost = ({ onPostCreated }) => {
             // axios: communique avec le server
             await axios.post('/api/posts', {
                 title: title,
-                content: content
+                content: content,
+                categories: selectedCategories
             }, {
                 // transmet le token pour verifier les droits
                 headers: {
@@ -39,6 +61,7 @@ const CreatePost = ({ onPostCreated }) => {
             // vide les champs du formulaire
             setTitle('');
             setContent('');
+            setSelectedCategories([]);
 
             // maj du coté Blog.jsx
             if (onPostCreated) {
@@ -91,6 +114,35 @@ const CreatePost = ({ onPostCreated }) => {
                         required
                     />
                 </div>
+
+                {/* categorie */}
+                {/* verifie quelle existe & quelle nest pas vide */}
+                {categories && categories.length > 0 && (
+                    <div className="bg-gray-50 p-2 border border-gray-200">
+
+                        <span className="text-xs font-bold text-gray-600 uppercase block mb-2">
+                            Personnalise ton billet en ajoutant des thèmes :
+                        </span>
+
+                        {/* wrap pour afficher */}
+                        <div className="flex flex-wrap gap-3">
+                            {/* boucle map pour afficher toutes cats */}
+                            {categories.map((cat) => (
+                                <label 
+                                className="flex items-center space-x-1 cursor-pointer text-[13px] text-gray-700"
+                                key={cat._id}>
+                                    <input
+                                        className="text-fuchsia-600 cursor-pointer"
+                                        type="checkbox"
+                                        checked={selectedCategories.includes(cat._id)}
+                                        onChange={() => handleCategoryChange(cat._id)}
+                                    />
+                                    <span>{cat.name}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* btn publier */}
                 <div className="text-right">
