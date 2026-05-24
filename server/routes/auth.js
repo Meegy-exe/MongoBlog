@@ -5,11 +5,18 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 
+// POST
 // ajoute /register a lurl pour la fonction dinscription
 router.post('/register', authController.register);
 
+// POST
 // ajoute /login a lurl pour la fonction de connexion
 router.post('/login', authController.login);
+
+// GET
+// route pour recuperer la liste de tous les blogs
+// en dehors des middlewares car public
+router.get('/users', authController.getAllUsers);
 
 // export
 module.exports = router;

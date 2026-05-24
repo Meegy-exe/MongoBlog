@@ -1,9 +1,11 @@
 // communique avec la BDD pour savoir si la requete peut etre autorisé
 
 // import
-const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+// models
+const User = require('../models/User');
 
 // route dautorisation de creation de compte
 exports.register = async (req, res) => {
@@ -26,7 +28,7 @@ exports.register = async (req, res) => {
         // standard logique: les mdps doivent correspondre
         if (password !== passwordConfirm) {
             return res.status(400).json({ message: "Les mots de passe ne correspondent pas." });
-        } 
+        }
 
         // assemblage pour la creation du nouveau compte
         const newUser = new User({
@@ -91,5 +93,25 @@ exports.login = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Erreur serveur au moment de la connexion." });
+    }
+};
+
+// READ
+// route pour recuperer les blogs de tous les users
+exports.getAllUsers = async (req, res) => {
+    try {
+        // attend & cible tous les users dans la bdd
+        // login en para: permet de return que le login
+        const users = await User.find({}, 'login');
+
+        // return la liste a react
+        res.status(200).json(users);
+
+        // en cas derreur
+    } catch (error) {
+        console.error("Erreur récupération utilisateurs :", error);
+        res.status(500).json({
+            message: "Erreur serveur au moment de récupérer la liste des blogs."
+        });
     }
 };
