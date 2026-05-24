@@ -10,6 +10,7 @@ import Blog from './pages/Blog.jsx';
 import Login from './pages/Login.jsx';
 import PostDetail from './pages/PostDetail.jsx';
 import Register from './pages/Register';
+import Home from './pages/Home';
 
 // chef dorchestre du site
 function App() {
@@ -18,6 +19,9 @@ function App() {
       {/* nav bar */}
       <Navbar />
       <Routes>
+        {/* route vers la liste des blogs */}
+        <Route path="/" element={<Home />} />
+        
         {/* route vers la page de connexion */}
         <Route path="/login" element={<Login />} />
 
